@@ -1,0 +1,10 @@
+streamlit
+PyPDF2
+pandas
+matplotlib
+wordcloud
+scikit-learn
+reportlab
+spacy
+docx2txt
+sentence-transformers
