@@ -1,27 +1,50 @@
 import streamlit as st
 import os
-from utils import extract_text
+from datetime import datetime
 
-st.set_page_config(page_title="Applicant Upload", layout="centered")
-st.title("📄 Applicant Portal — Upload Resume")
+# --- PAGE CONFIG ---
+st.set_page_config(page_title="Applicant Portal", layout="centered")
 
-UPLOAD_FOLDER = "resumes"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# --- TITLE ---
+st.title("👤 Applicant Portal - Upload Your Resume")
+st.caption("Upload your resume securely for screening")
 
-st.write("Please upload your resume (PDF / DOCX / TXT).")
+# --- SETUP ---
+UPLOAD_DIR = "resumes"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-uploaded = st.file_uploader("Upload resume", type=["pdf","docx","txt"])
-applicant_name = st.text_input("Optional: Enter your name (to rename saved file)")
+# --- APPLICANT INFO FORM ---
+st.markdown("### 🧾 Applicant Details")
+col1, col2 = st.columns(2)
+name = col1.text_input("Full Name *", placeholder="Enter your full name")
+email = col2.text_input("Email Address", placeholder="Enter your email (optional)")
 
-if uploaded:
-    name = applicant_name.strip() or uploaded.name
-    save_name = name if name.lower().endswith(tuple([".pdf",".docx",".txt"])) else f"{name}_{uploaded.name}"
-    save_path = os.path.join(UPLOAD_FOLDER, save_name)
+st.markdown("### 📤 Upload Your Resume")
+st.info("Please upload your resume in **PDF** or **DOCX** format. (Max size: 5MB)")
+
+resume_file = st.file_uploader("Choose your resume file", type=["pdf", "docx"], label_visibility="collapsed")
+
+# --- SUBMIT BUTTON ---
+if resume_file and name:
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{name.replace(' ', '_')}_{timestamp}.pdf"
+
+    save_path = os.path.join(UPLOAD_DIR, filename)
     with open(save_path, "wb") as f:
-        f.write(uploaded.getbuffer())
-    st.success(f"✅ Saved as: {save_path}")
-    # optional: preview text
-    txt = extract_text(save_path)
-    if txt:
-        if st.checkbox("Show extracted text (preview)"):
-            st.text_area("Preview", txt, height=250)
+        f.write(resume_file.getbuffer())
+
+    st.success(f"✅ {name}, your resume has been uploaded successfully!")
+    st.balloons()
+    st.markdown(
+        f"""
+        **File Name:** {filename}  
+        **Upload Time:** {datetime.now().strftime("%d-%m-%Y %H:%M:%S")}  
+        **Status:** Uploaded Successfully ✅
+        """
+    )
+
+    st.info("Thank you for applying! The recruiter will review your resume soon.")
+elif resume_file and not name:
+    st.warning("⚠️ Please enter your full name before uploading.")
+else:
+    st.write("Once uploaded, your resume will be automatically added to the system for screening.")

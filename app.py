@@ -1,12 +1,12 @@
 import streamlit as st
 
-st.set_page_config(page_title="Resume Screening Tool", layout="centered")
+st.set_page_config(page_title="AI Resume Screening Tool", layout="centered")
 
-st.title("🏆 AI-Powered Resume Screening Tool")
-st.write("Choose your role to proceed:")
+st.title("🤖 AI-Powered Resume Screening Tool")
 
-if st.button("📄 Applicant - Upload Resume"):
-    st.switch_page("pages/applicant.py")
-
-if st.button("👔 Recruiter - Dashboard"):
-    st.switch_page("pages/recruiter.py")
+st.markdown("""
+Welcome to the **AI Resume Screening Tool**!  
+Use the sidebar to navigate between:
+- 👤 Applicant: Upload your resume  
+- 🧑‍💼 Recruiter: Upload Job Description and view ranked resumes
+""")
